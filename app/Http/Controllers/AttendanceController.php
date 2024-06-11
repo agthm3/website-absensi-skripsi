@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -18,7 +19,7 @@ class AttendanceController extends Controller
     public function indexRekap()
     {
         $attendances = Attendance::all();
-        $totalAttendance = Attendance::select('employee', \DB::raw('count(*) as total'))
+        $totalAttendance = Attendance::select('employee', DB::raw('count(*) as total'))
                                     ->groupBy('employee')
                                     ->get();
 
@@ -31,7 +32,7 @@ class AttendanceController extends Controller
         $endDate = Carbon::parse($request->end_date)->endOfDay();
         
         $attendances = Attendance::whereBetween('created_at', [$startDate, $endDate])->get();
-        $totalAttendance = Attendance::select('employee', \DB::raw('count(*) as total'))
+        $totalAttendance = Attendance::select('employee', DB::raw('count(*) as total'))
                                     ->whereBetween('created_at', [$startDate, $endDate])
                                     ->groupBy('employee')
                                     ->get();
